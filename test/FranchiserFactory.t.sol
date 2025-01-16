@@ -405,7 +405,7 @@ contract FranchiserFactoryTest is Test, IFranchiserFactoryErrors, IFranchiserEve
             votingToken.getPermitSignature(vm, 0xa11ce, address(franchiserFactory), 100);
         votingToken.mint(owner, 100);
         vm.prank(owner);
-        Franchiser franchiser = franchiserFactory.permitAndFund(Utils.bob, 100, deadline, safeFutureExpiration, v, r, s);
+        Franchiser franchiser = franchiserFactory.permitAndFund(Utils.bob, 100, safeFutureExpiration, deadline, v, r, s);
 
         assertEq(votingToken.balanceOf(address(franchiser)), 100);
         assertEq(votingToken.getVotes(Utils.bob), 100);
@@ -414,10 +414,10 @@ contract FranchiserFactoryTest is Test, IFranchiserFactoryErrors, IFranchiserEve
 
     function testPermitAndFundManyRevertsArrayLengthMismatch() public {
         vm.expectRevert(abi.encodeWithSelector(ArrayLengthMismatch.selector, 0, 1));
-        franchiserFactory.permitAndFundMany(new address[](0), new uint256[](1), 0, safeFutureExpiration, 0, 0, 0);
+        franchiserFactory.permitAndFundMany(new address[](0), new uint256[](1), safeFutureExpiration, 0, 0, 0, 0);
 
         vm.expectRevert(abi.encodeWithSelector(ArrayLengthMismatch.selector, 1, 0));
-        franchiserFactory.permitAndFundMany(new address[](1), new uint256[](0), 0, safeFutureExpiration, 0, 0, 0);
+        franchiserFactory.permitAndFundMany(new address[](1), new uint256[](0), safeFutureExpiration, 0, 0, 0, 0);
     }
 
     // fails because of overflow
@@ -443,7 +443,7 @@ contract FranchiserFactoryTest is Test, IFranchiserFactoryErrors, IFranchiserEve
         amounts[1] = 50;
 
         vm.prank(owner);
-        Franchiser[] memory franchisers = franchiserFactory.permitAndFundMany(delegatees, amounts, deadline, safeFutureExpiration, v, r, s);
+        Franchiser[] memory franchisers = franchiserFactory.permitAndFundMany(delegatees, amounts, safeFutureExpiration, deadline, v, r, s);
 
         assertEq(votingToken.balanceOf(address(franchisers[0])), 50);
         assertEq(votingToken.balanceOf(address(franchisers[1])), 50);

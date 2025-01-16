@@ -94,8 +94,8 @@ interface IFranchiserFactory is
     function permitAndFund(
         address delegatee,
         uint256 amount,
-        uint256 deadline,
         uint256 expiration,
+        uint256 deadline,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -114,8 +114,8 @@ interface IFranchiserFactory is
     function permitAndFundMany(
         address[] calldata delegatees,
         uint256[] calldata amounts,
-        uint256 deadline,
         uint256 expiration,
+        uint256 deadline,
         uint8 v,
         bytes32 r,
         bytes32 s
