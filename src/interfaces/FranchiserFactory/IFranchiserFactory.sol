@@ -85,8 +85,8 @@ interface IFranchiserFactory is
     ///      If a Franchiser does not yet exist, one is created.
     /// @param delegatee The target `delegatee`.
     /// @param amount The amount of `votingToken` to allocate.
-    /// @param deadline A timestamp which the current timestamp must be less than or equal to.
     /// @param expiration The timestamp when the delegatee's voting power expires.
+    /// @param deadline A timestamp which the current timestamp must be less than or equal to.
     /// @param v Must produce valid secp256k1 signature from the holder along with `r` and `s`.
     /// @param r Must produce valid secp256k1 signature from the holder along with `v` and `s`.
     /// @param s Must produce valid secp256k1 signature from the holder along with `v` and `r`.
@@ -105,8 +105,8 @@ interface IFranchiserFactory is
     /// @dev The permit must be for the sum of `amounts`.
     /// @param delegatees The target `delegatees`.
     /// @param amounts The amounts of `votingToken` to allocate.
-    /// @param deadline A timestamp which the current timestamp must be less than or equal to.
     /// @param expiration The timestamp when the delegatee's voting power expires.
+    /// @param deadline A timestamp which the current timestamp must be less than or equal to.
     /// @param v Must produce valid secp256k1 signature from the holder along with `r` and `s`.
     /// @param r Must produce valid secp256k1 signature from the holder along with `v` and `s`.
     /// @param s Must produce valid secp256k1 signature from the holder along with `v` and `r`.
