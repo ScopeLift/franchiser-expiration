@@ -79,6 +79,11 @@ interface IFranchiserFactory is
     /// @param delegatee The address of the delegatee whose tokens should be recalled.
     function expiredRecall(address owner, address delegatee) external;
 
+    /// @notice Calls expiredRecall many times.
+    /// @param owners The target `owners`.
+    /// @param delegatees The target `delegatees`.
+    function expiredRecallMany(address[] calldata owners, address[] calldata delegatees) external;
+
     /// @notice Funds the Franchiser contract associated with the `delegatee`
     ///         using a signature.
     /// @dev The signature must have been produced by the sender of the call.

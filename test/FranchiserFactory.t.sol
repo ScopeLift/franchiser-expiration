@@ -400,6 +400,48 @@ contract FranchiserFactoryTest is Test, IFranchiserFactoryErrors, IFranchiserEve
         franchiserFactory.expiredRecall(_owner, _delegatee);
     }
 
+    function testExpiredRecallMany(
+        address _owner,
+        address _delegatee1,
+        address _delegatee2,
+        uint256 _amount,
+        uint256 _expiration,
+        address _expiredRecallCaller,
+        uint256 _recallTimestamp
+    ) public {
+        vm.assume(_validActorAddress(_owner));
+        vm.assume(_delegatee1 != address(0));
+        vm.assume(_delegatee2 != address(0));
+
+        _amount = _boundAmount(_amount);
+        _expiration = bound(_expiration, block.timestamp, type(uint256).max);
+        _recallTimestamp = bound(_recallTimestamp, _expiration, type(uint256).max);
+
+        votingToken.mint(_owner, _amount * 2);
+
+        address[] memory delegatees = new address[](2);
+        delegatees[0] = _delegatee1;
+        delegatees[1] = _delegatee2;
+
+        address[] memory owners = new address[](2);
+        owners[0] = _owner;
+        owners[1] = _owner;
+
+        vm.startPrank(_owner);
+        votingToken.approve(address(franchiserFactory), _amount * 2);
+        franchiserFactory.fund(_delegatee1, _amount, _expiration);
+        franchiserFactory.fund(_delegatee2, _amount, _expiration);
+        vm.stopPrank();
+
+        vm.warp(_recallTimestamp);
+        uint256 _ownerBalanceBeforeRecall = votingToken.balanceOf(_owner);
+
+        vm.prank(_expiredRecallCaller);
+        franchiserFactory.expiredRecallMany(owners, delegatees);
+
+        assertEq(votingToken.balanceOf(_owner), _ownerBalanceBeforeRecall + _amount * 2);
+    }
+
     function testPermitAndFund() public {
         (address owner, uint256 deadline, uint8 v, bytes32 r, bytes32 s) =
             votingToken.getPermitSignature(vm, 0xa11ce, address(franchiserFactory), 100);
