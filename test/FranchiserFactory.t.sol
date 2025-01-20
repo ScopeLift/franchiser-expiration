@@ -400,7 +400,7 @@ contract FranchiserFactoryTest is Test, IFranchiserFactoryErrors, IFranchiserEve
         franchiserFactory.expiredRecall(_owner, _delegatee);
     }
 
-    function testExpiredRecallMany(
+    function testFuzz_ExpiredRecallMany(
         address _owner,
         address _delegatee1,
         address _delegatee2,
