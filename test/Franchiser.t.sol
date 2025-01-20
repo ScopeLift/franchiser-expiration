@@ -405,6 +405,7 @@ contract FranchiserTest is Test, IFranchiserErrors, IFranchiserEvents {
         vm.assume(_validActorAddress(_delegatee));
         vm.assume(_validActorAddress(_attacker));
         vm.assume(_validActorAddress(_delegator));
+        vm.assume(_attacker != _delegator);
         _amount = bound(_amount, 4, 100_000_000e18);
         votingToken.mint(_delegator, _amount);
 
