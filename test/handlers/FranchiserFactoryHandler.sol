@@ -13,8 +13,6 @@ contract FranchiserFactoryHandler is Test {
     using EnumerableSet for EnumerableSet.AddressSet;
     using Address for address;
 
-    uint safeFutureExpiration = block.timestamp + 1 weeks;
-
     FranchiserFactory public factory;
     Franchiser public franchiser;
     Franchiser public subDelegatedFranchiser;
@@ -203,13 +201,13 @@ contract FranchiserFactoryHandler is Test {
     }
 
     // Invariant Handler functions for FranchiserFactory contract
-    function factory_fund(address _delegator, address _delegatee, uint256 _amount) external countCall("factory_fund") {
+    function factory_fund(address _delegator, address _delegatee, uint256 _amount, uint256 _expiration) external countCall("factory_fund") {
         vm.assume(_validActorAddress(_delegator));
         _amount = _boundAmount(_amount);
         votingToken.mint(_delegator, _amount);
         vm.startPrank(_delegator);
         votingToken.approve(address(factory), _amount);
-        franchiser = factory.fund(_delegatee, _amount, safeFutureExpiration);
+        franchiser = factory.fund(_delegatee, _amount, _expiration);
         vm.stopPrank();
 
         // add the created franchiser to the fundedFranchisers AddressSet for tracking totals invariants
@@ -223,7 +221,7 @@ contract FranchiserFactoryHandler is Test {
         delegatees.add(_delegatee);
     }
 
-    function factory_fundMany(address _delegator, address[] memory _rawDelegatees, uint256 _baseAmount)
+    function factory_fundMany(address _delegator, address[] memory _rawDelegatees, uint256 _baseAmount, uint256 _expiration)
         external
         countCall("factory_fundMany")
     {
@@ -246,7 +244,7 @@ contract FranchiserFactoryHandler is Test {
 
         // clear the storage of the lastFundedFranchisersArray and create a new one with call to fundMany
         delete lastFundedFranchisersArray;
-        lastFundedFranchisersArray = factory.fundMany(_delegatees, _amountsForFundMany, safeFutureExpiration);
+        lastFundedFranchisersArray = factory.fundMany(_delegatees, _amountsForFundMany, _expiration);
         vm.stopPrank();
 
         // add the delegator to the delegators AddressSets for tracking totals invariants
@@ -274,7 +272,7 @@ contract FranchiserFactoryHandler is Test {
 
         // before the recall, get the total amount delegated by the franchiser to be recalled  (including amounts it may have sub-delegated)
         uint256 _amountRecalled = getTotalAmountDelegatedByFranchiser(address(_selectedFranchiser));
-        
+
         // decrease the funded franchiser balance mapping and bump the total recalled ghost var by the amount recalled
         _decreaseFundedFranchiserAccountBalance(_selectedFranchiser, _amountRecalled);
         ghost_totalRecalled += _amountRecalled;
@@ -314,7 +312,7 @@ contract FranchiserFactoryHandler is Test {
         delete lastFundedFranchisersArray;
     }
 
-    function factory_permitAndFund(uint256 _delegatorPrivateKey, address _delegatee, uint256 _amount)
+    function factory_permitAndFund(uint256 _delegatorPrivateKey, address _delegatee, uint256 _amount, uint256 _expiration)
         external
         countCall("factory_permitAndFund")
     {
@@ -325,7 +323,7 @@ contract FranchiserFactoryHandler is Test {
         votingToken.mint(_delegator, _amount);
 
         vm.prank(_delegator);
-        franchiser = factory.permitAndFund(_delegatee, _amount, _deadline, safeFutureExpiration, _v, _r, _s);
+        franchiser = factory.permitAndFund(_delegatee, _amount, _expiration, _deadline, _v, _r, _s);
 
         // add the created franchiser to the fundedFranchisers AddressSet for tracking totals invariants
         _increaseFundedFranchiserAccountBalance(franchiser, _amount);
@@ -338,7 +336,7 @@ contract FranchiserFactoryHandler is Test {
         delegatees.add(_delegatee);
     }
 
-    function factory_permitAndFundMany(uint256 _delegatorPrivateKey, address[] memory _rawDelegatees, uint256 _amount)
+    function factory_permitAndFundMany(uint256 _delegatorPrivateKey, address[] memory _rawDelegatees, uint256 _amount, uint256 _expiration)
         external
         countCall("factory_permitAndFundMany")
     {
@@ -360,7 +358,7 @@ contract FranchiserFactoryHandler is Test {
 
         // clear the storage of the lastFundedFranchisersArray and create a new one with call to fundMany
         delete lastFundedFranchisersArray;
-        lastFundedFranchisersArray = factory.permitAndFundMany(_delegatees, _amountsForFundMany, _deadline, safeFutureExpiration, _v, _r, _s);
+        lastFundedFranchisersArray = factory.permitAndFundMany(_delegatees, _amountsForFundMany, _expiration, _deadline, _v, _r, _s);
         vm.stopPrank();
 
         // add the delegator to the delegators AddressSet for tracking totals invariants
@@ -412,7 +410,7 @@ contract FranchiserFactoryHandler is Test {
         if (address(_selectedFranchiser) == address(0)) {
             return;
         }
-        address _delegatee = _selectedFranchiser.delegatee();        
+        address _delegatee = _selectedFranchiser.delegatee();
         address[] memory _subDelegatees = _removeDuplicatesOrMatchingAddress(_rawSubDelegatees, _delegatee);
         uint256 _numberOfDelegatees = _subDelegatees.length;
         uint256 _amountInFranchiser = votingToken.balanceOf(address(_selectedFranchiser));
