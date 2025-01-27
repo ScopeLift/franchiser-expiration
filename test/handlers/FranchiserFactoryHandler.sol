@@ -160,7 +160,8 @@ contract FranchiserFactoryHandler is Test {
         bytes32 entropy = keccak256(abi.encodePacked(
             block.timestamp,
             block.number,
-            MAX_TIMESTAMP_OFFSET
+            MAX_TIMESTAMP_OFFSET,
+            msg.sender
         ));
 
         // Generate random magnitude and sign
