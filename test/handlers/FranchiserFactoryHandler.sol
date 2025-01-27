@@ -18,6 +18,9 @@ contract FranchiserFactoryHandler is Test {
     Franchiser public subDelegatedFranchiser;
     VotingTokenConcrete public votingToken;
 
+    /// Maximum time offset for random warping
+    uint256 constant MAX_TIMESTAMP_OFFSET = 1 weeks;
+
     // Struct for tracking the number of calls to each handler function
     struct CallCounts {
         uint256 calls;
@@ -147,6 +150,44 @@ contract FranchiserFactoryHandler is Test {
             _uniqueAddresses[k] = _addresses[k];
         }
         return _uniqueAddresses;
+    }
+
+    /// function that computes a random int256 timestamp offset that can be either positive or negative
+    function _warpAroundExpiration(uint256 expiration) internal returns (int256 timestampOffset) {
+        console2.log("Current timestamp:", block.timestamp);
+        vm.roll(block.number + 1);  // Advance block for new randomness
+
+        bytes32 entropy = keccak256(abi.encodePacked(
+            block.timestamp,
+            block.number,
+            MAX_TIMESTAMP_OFFSET
+        ));
+
+        // Generate random magnitude and sign
+        uint256 offsetMagnitude = uint256(keccak256(abi.encodePacked(entropy, "offsetMagnitude"))) % MAX_TIMESTAMP_OFFSET;
+        bool isNegative = uint256(keccak256(abi.encodePacked(entropy, "isNegative"))) % 2 == 1;
+
+        // Compute the signed offset
+        timestampOffset =  isNegative ? -int256(offsetMagnitude) : int256(offsetMagnitude);
+
+        console2.log("Magnitude:", offsetMagnitude);
+        console2.log("isNegative:", isNegative);
+        console2.log("Final offset:", timestampOffset);
+
+        // Compute and validate the new timestamp
+        uint256 newTimestamp;
+        if (timestampOffset >= 0) {
+            require(expiration <= type(uint256).max - uint256(timestampOffset), "Timestamp overflow");
+            newTimestamp = expiration + uint256(timestampOffset);
+        } else {
+            require(expiration >= uint256(-timestampOffset), "Timestamp underflow");
+            newTimestamp = expiration - uint256(-timestampOffset);
+        }
+
+        // Apply the new timestamp
+        vm.warp(newTimestamp);
+        console2.log("New timestamp:", block.timestamp);
+        return timestampOffset;
     }
 
     // public function (callable by invariant tests) to get the sum of the total amount delegated by all funded franchisers
@@ -324,15 +365,9 @@ contract FranchiserFactoryHandler is Test {
         address _delegator = _selectedFranchiser.delegator();
 
         uint256 expiration = factory.expirations(_selectedFranchiser);
-        console2.log("Current timestamp:", block.timestamp);
         console2.log("Expiration time: ", expiration);
 
-        // If the franchiser hasn't expired yet, warp time to after expiration. This is added to prevent revert, but may not be the best practice in the context of invariant tests
-        if (block.timestamp < expiration) {
-            vm.warp(expiration + 1);
-            console2.log("Warped time to after expiration");
-            console2.log("New timestamp:", block.timestamp);
-        }
+        _warpAroundExpiration(expiration);
 
         // before the recall, get the total amount delegated by the franchiser to be recalled  (including amounts it may have sub-delegated)
         uint256 _amountRecalled = getTotalAmountDelegatedByFranchiser(address(_selectedFranchiser));
@@ -343,11 +378,7 @@ contract FranchiserFactoryHandler is Test {
 
         // recall of delegated funds to the delegator
         vm.prank(_delegator);
-        try factory.expiredRecall(_delegator, _delegatee) {
-            console2.log("Expired recall succeeded");
-        } catch Error(string memory reason) {
-            console2.log("Expired recall failed:", reason);
-        }
+        factory.expiredRecall(_delegator, _delegatee);
         console2.log("=== End of factory_expiredRecall ===\n");
     }
 
