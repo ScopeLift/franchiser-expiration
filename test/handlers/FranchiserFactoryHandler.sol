@@ -343,7 +343,6 @@ contract FranchiserFactoryHandler is Test {
         external
         countCall("factory_recallExpired")
     {
-        console2.log("\n=== factory_recallExpired attempt ===");
         if (fundedFranchisers.length() == 0) {
             console2.log("No franchisers to recall");
             return;
@@ -366,12 +365,7 @@ contract FranchiserFactoryHandler is Test {
 
         // recall of delegated funds to the delegator
         vm.prank(_recallExpiredCaller);
-        try factory.recallExpired(_delegator, _delegatee) {
-            console2.log("Recall expired succeeded");
-        } catch Error(string memory reason) {
-            console2.log("Recall expired failed:", reason);
-        }
-        console2.log("=== End of factory_recallExpired ===\n");
+        factory.recallExpired(_delegator, _delegatee);
     }
 
     // This function will do a factory recall call for a subset of the last funded franchisers created by the factory (fundMany or permitAndFundMany)
