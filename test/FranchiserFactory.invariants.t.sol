@@ -7,7 +7,7 @@ import {FranchiserFactory} from "src/FranchiserFactory.sol";
 import {FranchiserFactoryHandler} from "test/handlers/FranchiserFactoryHandler.sol";
 import {VotingTokenConcrete} from "./VotingTokenConcrete.sol";
 
-contract FranchiseFactoryInvariantTest is Test {
+contract FranchiserFactoryInvariantTest is Test {
     FranchiserFactory factory;
     FranchiserFactoryHandler handler;
     VotingTokenConcrete token;
