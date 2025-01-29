@@ -12,6 +12,9 @@ bytecode_hash = "none"
 fuzz = { runs = 500 }
 invariant = { runs = 50 }
 
+[profile.ci_invariant]
+invariant = { runs = 50, depth = 500 }
+
 [invariant]
 call_override = false
 runs = 25

@@ -1,14 +1,10 @@
 name: test
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
   workflow_dispatch:
 
 env:
-  FOUNDRY_PROFILE: ci
+  FOUNDRY_PROFILE: ci_invariant
 
 jobs:
   check:
@@ -25,7 +21,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: stable
+          version: nightly
 
       - name: Run Forge build
         run: |
@@ -33,19 +29,7 @@ jobs:
           forge build --sizes
         id: build
 
-      - name: Run Forge unit tests
-        run: |
-          forge test -vvv --no-match-contract "FranchiserFactoryInvariantTest|IntegrationTest"
-        id: unit-test
-
       - name: Run Forge invariant tests
         run: |
           forge test -vvv --match-contract FranchiserFactoryInvariantTest
         id: invariant-test
-
-      - name: Run Forge integration tests
-        env:
-          FORK_URL: ${{ secrets.FORK_URL }}
-        run: |
-          forge test -vvv --match-contract IntegrationTest --fork-url $FORK_URL
-        id: integration-test

@@ -7,7 +7,7 @@ import {FranchiserFactory} from "src/FranchiserFactory.sol";
 import {FranchiserFactoryHandler} from "test/handlers/FranchiserFactoryHandler.sol";
 import {VotingTokenConcrete} from "./VotingTokenConcrete.sol";
 
-contract FranchiseFactoryInvariantTest is Test {
+contract FranchiserFactoryInvariantTest is Test {
     FranchiserFactory factory;
     FranchiserFactoryHandler handler;
     VotingTokenConcrete token;
@@ -16,7 +16,7 @@ contract FranchiseFactoryInvariantTest is Test {
         token = new VotingTokenConcrete();
         factory = new FranchiserFactory(IVotingToken(address(token)));
         handler = new FranchiserFactoryHandler(factory);
-        bytes4[] memory selectors = new bytes4[](11);
+        bytes4[] memory selectors = new bytes4[](14);
         selectors[0] = FranchiserFactoryHandler.factory_fund.selector;
         selectors[1] = FranchiserFactoryHandler.factory_fundMany.selector;
         selectors[2] = FranchiserFactoryHandler.factory_recall.selector;
@@ -28,6 +28,9 @@ contract FranchiseFactoryInvariantTest is Test {
         selectors[8] = FranchiserFactoryHandler.franchiser_unSubDelegate.selector;
         selectors[9] = FranchiserFactoryHandler.franchiser_unSubDelegateMany.selector;
         selectors[10] = FranchiserFactoryHandler.franchiser_recall.selector;
+        selectors[11] = FranchiserFactoryHandler.factory_expiredRecall.selector;
+        selectors[12] = FranchiserFactoryHandler.factory_expiredRecallMany.selector;
+        selectors[13] = FranchiserFactoryHandler.factory_warpTime.selector;
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
         targetContract(address(handler));
     }
@@ -41,23 +44,14 @@ contract FranchiseFactoryInvariantTest is Test {
     }
 
     function invariant_Franchisers_and_recalled_balance_sum_matches_total_supply() external {
-        handler.callSummary();
-        assertEq(
-            token.totalSupply(),
-            handler.sumDelegatorsBalances() + handler.sumFundedFranchisersBalances()
-        );
+        assertEq(token.totalSupply(), handler.sumDelegatorsBalances() + handler.sumFundedFranchisersBalances());
     }
 
     function invariant_Total_funded_less_total_recalled_matches_franchisers_totals() external {
-        handler.callSummary();
-        assertEq(
-            handler.ghost_totalFunded() - handler.ghost_totalRecalled(),
-            handler.sumFundedFranchisersBalances()
-        );
+        assertEq(handler.ghost_totalFunded() - handler.ghost_totalRecalled(), handler.sumFundedFranchisersBalances());
     }
 
     function invariant_Franchiser_subdelegation_totals_are_correct() external {
-        handler.callSummary();
         handler.forEachFundedFranchiserAddress(this.assertFundedFranchisersSubDelegationBalancesAreCorrect);
     }
 
@@ -67,6 +61,9 @@ contract FranchiseFactoryInvariantTest is Test {
     }
 
     function assertFundedFranchisersSubDelegationBalancesAreCorrect(address _franchiser) external {
-        assertEq(handler.getTotalAmountDelegatedByFranchiser(_franchiser), handler.ghost_fundedFranchiserBalances(_franchiser));
+        assertEq(
+            handler.getTotalAmountDelegatedByFranchiser(_franchiser),
+            handler.ghost_fundedFranchiserBalances(_franchiser)
+        );
     }
 }
