@@ -339,7 +339,7 @@ contract FranchiserFactoryHandler is Test {
         delete lastFundedFranchisersArray;
     }
 
-    function factory_recallExpired(uint256 _fundedFranchiserIndex, address _expiredRecallCaller)
+    function factory_recallExpired(uint256 _fundedFranchiserIndex, address _recallExpiredCaller)
         external
         countCall("factory_recallExpired")
     {
@@ -349,7 +349,7 @@ contract FranchiserFactoryHandler is Test {
             return;
         }
         _fundedFranchiserIndex = bound(_fundedFranchiserIndex, 0, fundedFranchisers.length() - 1);
-        vm.assume(_validActorAddress(_expiredRecallCaller));
+        vm.assume(_validActorAddress(_recallExpiredCaller));
         Franchiser _selectedFranchiser = Franchiser(fundedFranchisers.at(_fundedFranchiserIndex));
         address _delegatee = _selectedFranchiser.delegatee();
         address _delegator = _selectedFranchiser.delegator();
@@ -365,7 +365,7 @@ contract FranchiserFactoryHandler is Test {
         ghost_totalRecalled += _amountRecalled;
 
         // recall of delegated funds to the delegator
-        vm.prank(_expiredRecallCaller);
+        vm.prank(_recallExpiredCaller);
         try factory.recallExpired(_delegator, _delegatee) {
             console2.log("Recall expired succeeded");
         } catch Error(string memory reason) {
@@ -375,7 +375,7 @@ contract FranchiserFactoryHandler is Test {
     }
 
     // This function will do a factory recall call for a subset of the last funded franchisers created by the factory (fundMany or permitAndFundMany)
-    function factory_recallManyExpired(uint256 _numberFranchisersToRecall, address _expiredRecallCaller)
+    function factory_recallManyExpired(uint256 _numberFranchisersToRecall, address _recallManyExpiredCaller)
         external
         countCall("factory_recallManyExpired")
     {
@@ -384,7 +384,7 @@ contract FranchiserFactoryHandler is Test {
             return;
         }
         _numberFranchisersToRecall = bound(_numberFranchisersToRecall, 1, lastFundedFranchisersArray.length - 1);
-        vm.assume(_validActorAddress(_expiredRecallCaller));
+        vm.assume(_validActorAddress(_recallManyExpiredCaller));
         address _delegator = lastFundedFranchisersArray[0].delegator();
         address[] memory _delegateesForRecallMany = new address[](_numberFranchisersToRecall);
         address[] memory _targetsForRecallMany = new address[](_numberFranchisersToRecall);
@@ -401,7 +401,7 @@ contract FranchiserFactoryHandler is Test {
             _decreaseFundedFranchiserAccountBalance(_fundedFranchiser, _amountRecalled);
             ghost_totalRecalled += _amountRecalled;
         }
-        vm.prank(_expiredRecallCaller);
+        vm.prank(_recallManyExpiredCaller);
         factory.recallManyExpired(_targetsForRecallMany, _delegateesForRecallMany);
 
         // empty the lastFundedFranchisersArray, so factory_recallMany can only be called again after a new factory_fundMany
