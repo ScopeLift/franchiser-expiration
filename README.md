@@ -1,6 +1,6 @@
-# Franchiser
+# Franchiser (featuring Expiration)
 
-`Franchiser` allows holders of checkpoint voting tokens to selectively sub-delegate voting power while retaining full custody over their funds, as described in the [design document](./spec.md).
+This is a modified version of [Franchiser](https://github.com/uniswapfoundation/franchiser) that allows for permissionless recall of funds back to their original owner after a specified expiration time. All other Franchiser features are untouched.
 
 ## Running Locally
 
@@ -17,8 +17,8 @@
 
 ## Deployed Instance
 
-See the [v1 release](https://github.com/NoahZinsmeister/franchiser/releases/tag/v1).
+No deployed instance yet.
 
 ## Audit
 
-This codebase was audited by [Trail of Bits](https://www.trailofbits.com/) as of commit [e652c7fe1716bc8e9ca1bb929238313eabb9ea52](https://github.com/NoahZinsmeister/franchiser/commit/e652c7fe1716bc8e9ca1bb929238313eabb9ea52). All changes made since this commit may be viewed [here](https://github.com/NoahZinsmeister/franchiser/compare/e652c7fe1716bc8e9ca1bb929238313eabb9ea52...main). The audit findings are summarized in issues which may be viewed [here](https://github.com/NoahZinsmeister/franchiser/issues?q=is%3Aissue+%28TOB). 
+This codebase will be audited soon by ChainSecurity.
