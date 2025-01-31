@@ -31,5 +31,5 @@ jobs:
 
       - name: Run Forge invariant tests
         run: |
-          forge test -vvv --match-contract FranchiserFactoryInvariantTest
+          forge test -vvv --match-contract FranchiserExpiryFactoryInvariantTest
         id: invariant-test

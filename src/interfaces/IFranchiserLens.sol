@@ -2,7 +2,7 @@
 pragma solidity ^0.8;
 
 import {IFranchiserImmutableState} from "./IFranchiserImmutableState.sol";
-import {FranchiserFactory} from "../FranchiserFactory.sol";
+import {FranchiserExpiryFactory} from "../FranchiserExpiryFactory.sol";
 import {Franchiser} from "../Franchiser.sol";
 
 // import {IVotingToken} from "./IVotingToken.sol";
@@ -29,9 +29,9 @@ interface IFranchiserLens is IFranchiserImmutableState {
         uint256 votes;
     }
 
-    /// @notice The deployed `franchiserFactory`.
-    /// @return The `franchiserFactory`.
-    function franchiserFactory() external returns (FranchiserFactory);
+    /// @notice The deployed `franchiserExpiryFactory`.
+    /// @return The `franchiserExpiryFactory`.
+    function franchiserFactory() external returns (FranchiserExpiryFactory);
 
     /// @notice Gets the root delegation for any nested franchiser.
     /// @param franchiser The `franchiser`.

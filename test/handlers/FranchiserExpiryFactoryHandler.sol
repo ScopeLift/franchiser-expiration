@@ -6,14 +6,14 @@ import {EnumerableSet} from "test/helpers/EnumerableSet.sol";
 import {Address} from "openzeppelin-contracts/contracts/utils/Address.sol";
 import {IVotingToken} from "src/interfaces/IVotingToken.sol";
 import {VotingTokenConcrete} from "test/VotingTokenConcrete.sol";
-import {FranchiserFactory} from "src/FranchiserFactory.sol";
+import {FranchiserExpiryFactory} from "src/FranchiserExpiryFactory.sol";
 import {Franchiser} from "src/Franchiser.sol";
 
-contract FranchiserFactoryHandler is Test {
+contract FranchiserExpiryFactoryHandler is Test {
     using EnumerableSet for EnumerableSet.AddressSet;
     using Address for address;
 
-    FranchiserFactory public factory;
+    FranchiserExpiryFactory public factory;
     Franchiser public franchiser;
     Franchiser public subDelegatedFranchiser;
     VotingTokenConcrete public votingToken;
@@ -33,7 +33,7 @@ contract FranchiserFactoryHandler is Test {
     uint256 public ghost_totalFunded;
     uint256 public ghost_totalRecalled;
 
-    // Handler ghost AddressSet to contain all the funded franchisers created by the FranchiserFactory
+    // Handler ghost AddressSet to contain all the funded franchisers created by the FranchiserExpiryFactory
     EnumerableSet.AddressSet private fundedFranchisers;
     mapping(address => uint256) public ghost_fundedFranchiserBalances;
 
@@ -55,7 +55,7 @@ contract FranchiserFactoryHandler is Test {
     // Franchiser that performed the last sub-delegation
     Franchiser private lastSubDelegatingFranchiser;
 
-    constructor(FranchiserFactory _factory) {
+    constructor(FranchiserExpiryFactory _factory) {
         factory = _factory;
         votingToken = VotingTokenConcrete(address(factory.votingToken()));
         franchiser = new Franchiser(IVotingToken(address(votingToken)));
@@ -220,7 +220,7 @@ contract FranchiserFactoryHandler is Test {
         }
     }
 
-    // Invariant Handler functions for FranchiserFactory contract
+    // Invariant Handler functions for FranchiserExpiryFactory contract
     function factory_fund(address _delegator, address _delegatee, uint256 _amount, uint256 _expiration)
         external
         countCall("factory_fund")

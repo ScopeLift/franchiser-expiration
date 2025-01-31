@@ -3,34 +3,34 @@ pragma solidity 0.8.15;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {IVotingToken} from "src/interfaces/IVotingToken.sol";
-import {FranchiserFactory} from "src/FranchiserFactory.sol";
-import {FranchiserFactoryHandler} from "test/handlers/FranchiserFactoryHandler.sol";
+import {FranchiserExpiryFactory} from "src/FranchiserExpiryFactory.sol";
+import {FranchiserExpiryFactoryHandler} from "test/handlers/FranchiserExpiryFactoryHandler.sol";
 import {VotingTokenConcrete} from "./VotingTokenConcrete.sol";
 
-contract FranchiserFactoryInvariantTest is Test {
-    FranchiserFactory factory;
-    FranchiserFactoryHandler handler;
+contract FranchiserExpiryFactoryInvariantTest is Test {
+    FranchiserExpiryFactory factory;
+    FranchiserExpiryFactoryHandler handler;
     VotingTokenConcrete token;
 
     function setUp() public virtual {
         token = new VotingTokenConcrete();
-        factory = new FranchiserFactory(IVotingToken(address(token)));
-        handler = new FranchiserFactoryHandler(factory);
+        factory = new FranchiserExpiryFactory(IVotingToken(address(token)));
+        handler = new FranchiserExpiryFactoryHandler(factory);
         bytes4[] memory selectors = new bytes4[](14);
-        selectors[0] = FranchiserFactoryHandler.factory_fund.selector;
-        selectors[1] = FranchiserFactoryHandler.factory_fundMany.selector;
-        selectors[2] = FranchiserFactoryHandler.factory_recall.selector;
-        selectors[3] = FranchiserFactoryHandler.factory_recallMany.selector;
-        selectors[4] = FranchiserFactoryHandler.factory_permitAndFund.selector;
-        selectors[5] = FranchiserFactoryHandler.factory_permitAndFundMany.selector;
-        selectors[6] = FranchiserFactoryHandler.franchiser_subDelegate.selector;
-        selectors[7] = FranchiserFactoryHandler.franchiser_subDelegateMany.selector;
-        selectors[8] = FranchiserFactoryHandler.franchiser_unSubDelegate.selector;
-        selectors[9] = FranchiserFactoryHandler.franchiser_unSubDelegateMany.selector;
-        selectors[10] = FranchiserFactoryHandler.franchiser_recall.selector;
-        selectors[11] = FranchiserFactoryHandler.factory_recallExpired.selector;
-        selectors[12] = FranchiserFactoryHandler.factory_recallManyExpired.selector;
-        selectors[13] = FranchiserFactoryHandler.factory_warpTime.selector;
+        selectors[0] = FranchiserExpiryFactoryHandler.factory_fund.selector;
+        selectors[1] = FranchiserExpiryFactoryHandler.factory_fundMany.selector;
+        selectors[2] = FranchiserExpiryFactoryHandler.factory_recall.selector;
+        selectors[3] = FranchiserExpiryFactoryHandler.factory_recallMany.selector;
+        selectors[4] = FranchiserExpiryFactoryHandler.factory_permitAndFund.selector;
+        selectors[5] = FranchiserExpiryFactoryHandler.factory_permitAndFundMany.selector;
+        selectors[6] = FranchiserExpiryFactoryHandler.franchiser_subDelegate.selector;
+        selectors[7] = FranchiserExpiryFactoryHandler.franchiser_subDelegateMany.selector;
+        selectors[8] = FranchiserExpiryFactoryHandler.franchiser_unSubDelegate.selector;
+        selectors[9] = FranchiserExpiryFactoryHandler.franchiser_unSubDelegateMany.selector;
+        selectors[10] = FranchiserExpiryFactoryHandler.franchiser_recall.selector;
+        selectors[11] = FranchiserExpiryFactoryHandler.factory_recallExpired.selector;
+        selectors[12] = FranchiserExpiryFactoryHandler.factory_recallManyExpired.selector;
+        selectors[13] = FranchiserExpiryFactoryHandler.factory_warpTime.selector;
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
         targetContract(address(handler));
     }
