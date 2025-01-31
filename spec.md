@@ -20,7 +20,7 @@ Imagine a `FranchiserFactory` contract designed to allocate voting tokens, with 
    2. The `Franchiser` automatically delegates voting power to the `delegatee` with no further interaction required.
    3. Anyone can call `recallExpired` to return the delegated tokens back to the `owner` once the `expiration` timestamp is reached.
    4. Anyone can call `recallManyExpired` to recall multiple expired instances of `Franchiser` in a single transaction. However, the operation will revert if any instance of `Franchiser` has not yet expired. This ensures atomic execution and prevents partial recalls.
-   5. The `owner` can update a `Franchiser`'s expiration by calling `fund` with an `amount` of `0` and a new `expiration` timestamp.
+   5. The `owner` can update a delegatee's `Franchiser` expiration by calling `fund` on it again. A zero value can be used, or an additional amount could be funded.
 
 2. `Franchiser` contracts allow `delegatees` to further sub-divide their tokens amongst several `subDelegatees`.
    1. At any point before expiration, the `delegatee` of a `Franchiser` may specify an `amount` of voting power to give to a `subDelegatee`, which creates and funds a _nested_ `Franchiser` owned by the `delegatee`.
