@@ -3,8 +3,8 @@ pragma solidity 0.8.15;
 
 import {Script} from "forge-std/Script.sol";
 import {IVotingToken} from "../src/interfaces/IVotingToken.sol";
-import {IVotingToken} from "../src/FranchiserFactory.sol";
-import {FranchiserFactory} from "../src/FranchiserFactory.sol";
+import {IVotingToken} from "../src/FranchiserExpiryFactory.sol";
+import {FranchiserExpiryFactory} from "../src/FranchiserExpiryFactory.sol";
 import {FranchiserLens} from "../src/FranchiserLens.sol";
 
 contract Deploy is Script {
@@ -13,7 +13,7 @@ contract Deploy is Script {
 
     function run() public {
         vm.startBroadcast();
-        FranchiserFactory franchiserFactory = new FranchiserFactory(UNI);
+        FranchiserExpiryFactory franchiserFactory = new FranchiserExpiryFactory(UNI);
         new FranchiserLens(UNI, franchiserFactory);
         vm.stopBroadcast();
     }

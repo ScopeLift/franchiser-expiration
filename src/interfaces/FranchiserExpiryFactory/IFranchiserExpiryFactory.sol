@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8;
 
-import {IFranchiserFactoryErrors} from "./IFranchiserFactoryErrors.sol";
+import {IFranchiserExpiryFactoryErrors} from "./IFranchiserExpiryFactoryErrors.sol";
 import {IFranchiserImmutableState} from "../IFranchiserImmutableState.sol";
 import {Franchiser} from "../../Franchiser.sol";
 
 /// @title Interface for the FranchiserFactory contract.
-interface IFranchiserFactory is
-    IFranchiserFactoryErrors,
+interface IFranchiserExpiryFactory is
+    IFranchiserExpiryFactoryErrors,
     IFranchiserImmutableState
 {
     /// @notice The initial value for the maximum number of `subDelegatee` addresses that a Franchiser

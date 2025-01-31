@@ -3,7 +3,7 @@ pragma solidity 0.8.15;
 
 import {IFranchiserLens} from "./interfaces/IFranchiserLens.sol";
 import {FranchiserImmutableState} from "./base/FranchiserImmutableState.sol";
-import {FranchiserFactory} from "./FranchiserFactory.sol";
+import {FranchiserExpiryFactory} from "./FranchiserExpiryFactory.sol";
 import {IVotingToken} from "./interfaces/IVotingToken.sol";
 import {Franchiser} from "./Franchiser.sol";
 
@@ -12,9 +12,9 @@ contract FranchiserLens is IFranchiserLens, FranchiserImmutableState {
     uint256 private constant MAXIMUM_NESTING_DEPTH = 5; // log2(8) + 2
 
     /// @inheritdoc IFranchiserLens
-    FranchiserFactory public immutable franchiserFactory;
+    FranchiserExpiryFactory public immutable franchiserFactory;
 
-    constructor(IVotingToken votingToken_, FranchiserFactory franchiserFactory_)
+    constructor(IVotingToken votingToken_, FranchiserExpiryFactory franchiserFactory_)
         FranchiserImmutableState(votingToken_)
     {
         franchiserFactory = franchiserFactory_;

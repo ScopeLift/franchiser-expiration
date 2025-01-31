@@ -3,7 +3,7 @@ pragma solidity 0.8.15;
 
 import {Test} from "forge-std/Test.sol";
 import {VotingTokenConcrete} from "./VotingTokenConcrete.sol";
-import {FranchiserFactory} from "../src/FranchiserFactory.sol";
+import {FranchiserExpiryFactory} from "../src/FranchiserExpiryFactory.sol";
 import {FranchiserLens} from "../src/FranchiserLens.sol";
 import {IVotingToken} from "../src/interfaces/IVotingToken.sol";
 import {Franchiser} from "../src/Franchiser.sol";
@@ -12,14 +12,14 @@ import {Utils} from "./Utils.sol";
 
 contract FranchiserLensTest is Test {
     VotingTokenConcrete private votingToken;
-    FranchiserFactory private franchiserFactory;
+    FranchiserExpiryFactory private franchiserFactory;
     FranchiserLens private franchiserLens;
 
     uint safeFutureExpiration = block.timestamp + 1 weeks;
 
     function setUp() public {
         votingToken = new VotingTokenConcrete();
-        franchiserFactory = new FranchiserFactory(
+        franchiserFactory = new FranchiserExpiryFactory(
             IVotingToken(address(votingToken))
         );
         franchiserLens = new FranchiserLens(

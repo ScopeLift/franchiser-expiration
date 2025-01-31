@@ -3,7 +3,7 @@ pragma solidity 0.8.15;
 
 import {Test} from "forge-std/Test.sol";
 import {IVotingToken} from "../src/interfaces/IVotingToken.sol";
-import {FranchiserFactory} from "../src/FranchiserFactory.sol";
+import {FranchiserExpiryFactory} from "../src/FranchiserExpiryFactory.sol";
 import {Utils} from "./Utils.sol";
 import {ERC20VotesComp} from "openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20VotesComp.sol";
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
@@ -42,13 +42,13 @@ contract IntegrationTest is Test {
     IGovernorBravo private constant GOVERNOR_BRAVO =
         IGovernorBravo(0x408ED6354d4973f66138C91495F2f2FCbd8724C3);
 
-    FranchiserFactory private franchiserFactory;
+    FranchiserExpiryFactory private franchiserFactory;
     uint safeFutureExpiration;
 
     function setUp() public {
         safeFutureExpiration = block.timestamp + 1 weeks;
         vm.startPrank(address(0));
-        franchiserFactory = new FranchiserFactory(UNI);
+        franchiserFactory = new FranchiserExpiryFactory(UNI);
         // fund the timelock with 1 ETH to send txs
         (bool success, ) = address(TIMELOCK).call{value: 1e18}("");
         assert(success);

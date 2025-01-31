@@ -35,12 +35,12 @@ jobs:
 
       - name: Run Forge unit tests
         run: |
-          forge test -vvv --no-match-contract "FranchiserFactoryInvariantTest|IntegrationTest"
+          forge test -vvv --no-match-contract "FranchiserExpiryFactoryInvariantTest|IntegrationTest"
         id: unit-test
 
       - name: Run Forge invariant tests
         run: |
-          forge test -vvv --match-contract FranchiserFactoryInvariantTest
+          forge test -vvv --match-contract FranchiserExpiryFactoryInvariantTest
         id: invariant-test
 
       - name: Run Forge integration tests

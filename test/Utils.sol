@@ -3,7 +3,7 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 import {VotingTokenConcrete} from "./VotingTokenConcrete.sol";
-import {FranchiserFactory} from "../src/FranchiserFactory.sol";
+import {FranchiserExpiryFactory} from "../src/FranchiserExpiryFactory.sol";
 import {Franchiser} from "../src/Franchiser.sol";
 
 library Utils {
@@ -21,7 +21,7 @@ library Utils {
         uint256 levels,
         Vm vm,
         VotingTokenConcrete votingToken,
-        FranchiserFactory franchiserFactory,
+        FranchiserExpiryFactory franchiserFactory,
         uint256 expiration
     ) internal returns (Franchiser[5] memory franchisers) {
         assert(levels != 0);
@@ -61,7 +61,7 @@ library Utils {
     function nestMaximum(
         Vm vm,
         VotingTokenConcrete votingToken,
-        FranchiserFactory franchiserFactory,
+        FranchiserExpiryFactory franchiserFactory,
         uint256 expiration
     ) internal returns (Franchiser[][5] memory franchisers) {
         assert(franchiserFactory.INITIAL_MAXIMUM_SUBDELEGATEES() == 8);

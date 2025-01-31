@@ -2,24 +2,24 @@
 pragma solidity 0.8.15;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {IFranchiserFactoryErrors} from "../src/interfaces/FranchiserFactory/IFranchiserFactoryErrors.sol";
+import {IFranchiserExpiryFactoryErrors} from "../src/interfaces/FranchiserExpiryFactory/IFranchiserExpiryFactoryErrors.sol";
 import {IFranchiserEvents} from "../src/interfaces/Franchiser/IFranchiserEvents.sol";
 import {IFranchiserErrors} from "../src/interfaces/Franchiser/IFranchiserErrors.sol";
 import {VotingTokenConcrete} from "./VotingTokenConcrete.sol";
 import {IVotingToken} from "../src/interfaces/IVotingToken.sol";
-import {FranchiserFactory} from "../src/FranchiserFactory.sol";
+import {FranchiserExpiryFactory} from "../src/FranchiserExpiryFactory.sol";
 import {Franchiser} from "../src/Franchiser.sol";
 import {Utils} from "./Utils.sol";
 
-contract FranchiserFactoryTest is Test, IFranchiserFactoryErrors, IFranchiserEvents {
+contract FranchiserExpiryFactoryTest is Test, IFranchiserExpiryFactoryErrors, IFranchiserEvents {
     VotingTokenConcrete private votingToken;
-    FranchiserFactory private franchiserFactory;
+    FranchiserExpiryFactory private franchiserFactory;
 
     uint safeFutureExpiration = block.timestamp + 1 weeks;
 
     function setUp() public {
         votingToken = new VotingTokenConcrete();
-        franchiserFactory = new FranchiserFactory(IVotingToken(address(votingToken)));
+        franchiserFactory = new FranchiserExpiryFactory(IVotingToken(address(votingToken)));
     }
 
     function _validActorAddress(address _address) internal view returns (bool valid) {
@@ -201,7 +201,7 @@ contract FranchiserFactoryTest is Test, IFranchiserFactoryErrors, IFranchiserEve
 
         vm.startPrank(_delegator);
         votingToken.approve(address(franchiserFactory), _amount);
-        vm.expectRevert(IFranchiserFactoryErrors.InvalidExpiration.selector);
+        vm.expectRevert(IFranchiserExpiryFactoryErrors.InvalidExpiration.selector);
         franchiserFactory.fund(_delegatee, _amount, _expiration);
         vm.stopPrank();
     }

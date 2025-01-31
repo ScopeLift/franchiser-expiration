@@ -19,7 +19,7 @@ interface IFranchiser is IFranchiserErrors, IFranchiserEvents {
 
     /// @notice The address that delegated tokens to this address.
     /// @dev Is derived from the `delegatee` of the `owner`, except for
-    ///      direct descendants of the FranchiserFactory.
+    ///      direct descendants of the FranchiserExpiryFactory.
     ///      Never changes after being set via initialize.
     /// @return The `delegator`.
     function delegator() external view returns (address);
