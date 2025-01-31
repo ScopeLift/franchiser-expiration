@@ -40,13 +40,13 @@ contract FranchiserExpiryFactory is IFranchiserExpiryFactory, FranchiserImmutabl
 
     /// @inheritdoc IFranchiserExpiryFactory
     function fund(address delegatee, uint256 amount, uint256 expiration) public returns (Franchiser franchiser) {
+        if (expiration < block.timestamp) revert InvalidExpiration();
         franchiser = getFranchiser(msg.sender, delegatee);
         if (!address(franchiser).isContract()) {
             // deploy a new contract if necessary
             address(franchiserImplementation).cloneDeterministic(getSalt(msg.sender, delegatee));
             franchiser.initialize(msg.sender, delegatee, INITIAL_MAXIMUM_SUBDELEGATEES);
         }
-        if (expiration < block.timestamp) revert InvalidExpiration();
         expirations[franchiser] = expiration;
 
         ERC20(address(votingToken)).safeTransferFrom(msg.sender, address(franchiser), amount);
