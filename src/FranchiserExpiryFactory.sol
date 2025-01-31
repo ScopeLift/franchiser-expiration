@@ -91,7 +91,7 @@ contract FranchiserExpiryFactory is IFranchiserExpiryFactory, FranchiserImmutabl
     /// @inheritdoc IFranchiserExpiryFactory
     function recallExpired(address owner, address delegatee) public {
         Franchiser franchiser = getFranchiser(owner, delegatee);
-        if (block.timestamp < expirations[franchiser]) revert DelegateeNotExpired();
+        if (block.timestamp < expirations[franchiser]) revert FranchiserNotExpired();
         if (address(franchiser).isContract()) franchiser.recall(owner);
     }
 

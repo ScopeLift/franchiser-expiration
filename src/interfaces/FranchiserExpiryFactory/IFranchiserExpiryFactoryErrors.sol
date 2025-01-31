@@ -11,6 +11,6 @@ interface IFranchiserExpiryFactoryErrors {
     /// @notice Thrown when attempting to set an expiration timestamp that is in the past
     error InvalidExpiration();
 
-    /// @notice Thrown when attempting to recall tokens from a delegatee before their delegation has expired
-    error DelegateeNotExpired();
+    /// @notice Thrown when attempting to recall tokens from a franchiser before its expiration timestamp.
+    error FranchiserNotExpired();
 }
